@@ -1,27 +1,28 @@
 ﻿using ConsoleApp2;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
 namespace AutoService
 {
-    public class Part
+    public class Detale
     {
         public int ID { get; set; }
         public string Name { get; set; }
         public decimal Price { get; set; }
     }
 
-    public class Warehouse
+    public class Sklad
     {
         public int ID { get; set; }
         public decimal Balance { get; set; }
     }
 
-    public class WarehousePart
+    public class SkladDetale
     {
-        public int WarehouseID { get; set; }
-        public int PartID { get; set; }
+        public int SkladID { get; set; }
+        public int DetaleID { get; set; }
         public int Count { get; set; }
     }
 
@@ -29,23 +30,23 @@ namespace AutoService
     {
         public int ID { get; set; }
         public string CarModel { get; set; }
-        public int BrokenPartID { get; set; }
+        public int BrokenDetaleID { get; set; }
         public decimal RepairCost { get; set; }
         public bool IsServed { get; set; }
     }
 
     public class PurchaseOrder
     {
-        public int PartID { get; set; }
+        public int DetaleID { get; set; }
         public int Quantity { get; set; }
         public int RemainingCars { get; set; }
     }
 
     public class AutoServiceGame
     {
-        private Warehouse warehouse;
-        private List<Part> availableParts;
-        private List<WarehousePart> warehouseParts;
+        private Sklad Sklad;
+        private List<Detale> availableDetales;
+        private List<SkladDetale> SkladDetales;
         private List<PurchaseOrder> pendingOrders;
         private Random random;
 
@@ -58,47 +59,47 @@ namespace AutoService
 
         private void InitializeGame()
         {
-            LoadWarehouseData();
-            LoadAvailableParts();
+            LoadSkladData();
+            LoadAvailableDetales();
             Console.WriteLine("Добро пожаловать в автосервис!");
-            Console.WriteLine($"Начальный баланс: {warehouse.Balance}");
+            Console.WriteLine($"Начальный баланс: {Sklad.Balance}");
         }
 
-        private void LoadWarehouseData()
+        private void LoadSkladData()
         {
-            var dbWarehouse = Core.Context.Sklad.FirstOrDefault();
-            if (dbWarehouse != null)
+            var dbSklad = Core.Context.Sklad.FirstOrDefault();
+            if (dbSklad != null)
             {
-                warehouse = new Warehouse
+                Sklad = new Sklad
                 {
-                    ID = dbWarehouse.ID,
-                    Balance = (int)dbWarehouse.Balance
+                    ID = dbSklad.ID,
+                    Balance = (int)dbSklad.Balance
                 };
             }
-            warehouseParts = new List<WarehousePart>();
-            var dbWarehouseParts = Core.Context.DetaleSklad.ToList();
-            foreach (var dbPart in dbWarehouseParts)
+            SkladDetales = new List<SkladDetale>();
+            var dbSkladDetales = Core.Context.DetaleSklad.ToList();
+            foreach (var dbDetale in dbSkladDetales)
             {
-                warehouseParts.Add(new WarehousePart
+                SkladDetales.Add(new SkladDetale
                 {
-                    WarehouseID = dbPart.SkladID,
-                    PartID = dbPart.DetaleID,
-                    Count = (int)dbPart.Count
+                    SkladID = dbDetale.SkladID,
+                    DetaleID = dbDetale.DetaleID,
+                    Count = (int)dbDetale.Count
                 });
             }
         }
 
-        private void LoadAvailableParts()
+        private void LoadAvailableDetales()
         {
-            availableParts = new List<Part>();
-            var dbParts = Core.Context.Detale.ToList();
-            foreach (var dbPart in dbParts)
+            availableDetales = new List<Detale>();
+            var dbDetales = Core.Context.Detale.ToList();
+            foreach (var dbDetale in dbDetales)
             {
-                availableParts.Add(new Part
+                availableDetales.Add(new Detale
                 {
-                    ID = dbPart.ID,
-                    Name = dbPart.Name,
-                    Price = (decimal)dbPart.Price
+                    ID = dbDetale.ID,
+                    Name = dbDetale.Name,
+                    Price = (decimal)dbDetale.Price
                 });
             }
         }
@@ -106,29 +107,29 @@ namespace AutoService
         {
             try
             {
-                var dbWarehouse = Core.Context.Sklad.FirstOrDefault(s => s.ID == warehouse.ID);
-                if (dbWarehouse != null)
+                var dbSklad = Core.Context.Sklad.FirstOrDefault(s => s.ID == Sklad.ID);
+                if (dbSklad != null)
                 {
-                    dbWarehouse.Balance = warehouse.Balance;
+                    dbSklad.Balance = Sklad.Balance;
                 }
-                foreach (var wp in warehouseParts)
+                foreach (var wp in SkladDetales)
                 {
-                    var dbWarehousePart = Core.Context.DetaleSklad
-                        .FirstOrDefault(ds => ds.SkladID == wp.WarehouseID && ds.DetaleID == wp.PartID);
+                    var dbSkladDetale = Core.Context.DetaleSklad
+                        .FirstOrDefault(ds => ds.SkladID == wp.SkladID && ds.DetaleID == wp.DetaleID);
 
-                    if (dbWarehousePart != null)
+                    if (dbSkladDetale != null)
                     {
-                        dbWarehousePart.Count = wp.Count;
+                        dbSkladDetale.Count = wp.Count;
                     }
                     else
                     {
-                        var newWarehousePart = new DetaleSklad
+                        var newSkladDetale = new DetaleSklad
                         {
-                            SkladID = wp.WarehouseID,
-                            DetaleID = wp.PartID,
+                            SkladID = wp.SkladID,
+                            DetaleID = wp.DetaleID,
                             Count = wp.Count
                         };
-                        Core.Context.DetaleSklad.Add(newWarehousePart);
+                        Core.Context.DetaleSklad.Add(newSkladDetale);
                     }
                 }
                 Core.Context.SaveChanges();
@@ -154,7 +155,7 @@ namespace AutoService
                 ProcessCustomerService(customer);
                 SaveGameState();
 
-                if (warehouse.Balance <= 0)
+                if (Sklad.Balance <= 0)
                 {
                     Console.WriteLine("\nВы банкрот! Игра окончена.");
                     break;
@@ -184,7 +185,7 @@ namespace AutoService
                         SaveGameState();
                         break;
                     case "3":
-                        ShowWarehouseStatus();
+                        ShowSkladStatus();
                         break;
                     default:
                         Console.WriteLine("Неверный выбор! Попробуйте снова.");
@@ -195,15 +196,15 @@ namespace AutoService
 
         private Customer GenerateCustomer()
         {
-            var brokenPart = availableParts[random.Next(availableParts.Count)];
-            var workCost = brokenPart.Price * 0.3m;
-            var repairCost = brokenPart.Price + workCost;
+            var brokenDetale = availableDetales[random.Next(availableDetales.Count)];
+            var workCost = brokenDetale.Price * 0.3m;
+            var repairCost = brokenDetale.Price + workCost;
 
             return new Customer
             {
                 ID = random.Next(1000, 9999),
                 CarModel = GenerateCarModel(),
-                BrokenPartID = brokenPart.ID,
+                BrokenDetaleID = brokenDetale.ID,
                 RepairCost = repairCost,
                 IsServed = false
             };
@@ -219,12 +220,12 @@ namespace AutoService
 
         private void ShowCustomerInfo(Customer customer)
         {
-            var brokenPart = availableParts.First(p => p.ID == customer.BrokenPartID);
+            var brokenDetale = availableDetales.First(p => p.ID == customer.BrokenDetaleID);
 
             Console.WriteLine($"Клиент приехал на {customer.CarModel}");
-            Console.WriteLine($"Сломана деталь: {brokenPart.Name}");
+            Console.WriteLine($"Сломана деталь: {brokenDetale.Name}");
             Console.WriteLine($"Стоимость ремонта: {customer.RepairCost}");
-            Console.WriteLine($"На складе есть: {GetPartCount(customer.BrokenPartID)} шт.");
+            Console.WriteLine($"На складе есть: {GetDetaleCount(customer.BrokenDetaleID)} шт.");
         }
 
         private void ProcessCustomerService(Customer customer)
@@ -253,43 +254,43 @@ namespace AutoService
 
         private void AcceptOrder(Customer customer)
         {
-            var brokenPartID = customer.BrokenPartID;
-            var partCount = GetPartCount(brokenPartID);
+            var brokenDetaleID = customer.BrokenDetaleID;
+            var DetaleCount = GetDetaleCount(brokenDetaleID);
 
-            if (partCount > 0)
+            if (DetaleCount > 0)
             {
-                UsePart(brokenPartID);
-                warehouse.Balance += customer.RepairCost;
+                UseDetale(brokenDetaleID);
+                Sklad.Balance += customer.RepairCost;
                 customer.IsServed = true;
                 Console.WriteLine($"Ремонт выполнен успешно! Получено {customer.RepairCost}");
             }
             else
             {
-                ReplaceWithRandomPart(customer);
+                ReplaceWithRandomDetale(customer);
             }
         }
 
         private void RefuseOrder(Customer customer)
         {
             var penalty = customer.RepairCost * 0.2m; // 20% штраф
-            warehouse.Balance -= penalty;
+            Sklad.Balance -= penalty;
             Console.WriteLine($"Отказ в обслуживании. Штраф: {penalty}");
         }
 
-        private void ReplaceWithRandomPart(Customer customer)
+        private void ReplaceWithRandomDetale(Customer customer)
         {
-            var availablePartIDs = warehouseParts.Where(wp => wp.Count > 0).Select(wp => wp.PartID).ToList();
+            var availableDetaleIDs = SkladDetales.Where(wp => wp.Count > 0).Select(wp => wp.DetaleID).ToList();
 
-            if (availablePartIDs.Count > 0)
+            if (availableDetaleIDs.Count > 0)
             {
-                var randomPartID = availablePartIDs[random.Next(availablePartIDs.Count)];
-                var randomPart = availableParts.First(p => p.ID == randomPartID);
+                var randomDetaleID = availableDetaleIDs[random.Next(availableDetaleIDs.Count)];
+                var randomDetale = availableDetales.First(p => p.ID == randomDetaleID);
                 var compensation = customer.RepairCost * 1.5m; // 150% компенсация
 
-                UsePart(randomPartID);
-                warehouse.Balance -= compensation;
+                UseDetale(randomDetaleID);
+                Sklad.Balance -= compensation;
 
-                Console.WriteLine($"Нужной детали нет! Установлена {randomPart.Name}");
+                Console.WriteLine($"Нужной детали нет! Установлена {randomDetale.Name}");
                 Console.WriteLine($"Клиент недоволен! Выплачена компенсация: {compensation}");
             }
             else
@@ -298,19 +299,19 @@ namespace AutoService
             }
         }
 
-        private void UsePart(int partID)
+        private void UseDetale(int DetaleID)
         {
-            var warehousePart = warehouseParts.FirstOrDefault(wp => wp.PartID == partID);
-            if (warehousePart != null && warehousePart.Count > 0)
+            var SkladDetale = SkladDetales.FirstOrDefault(wp => wp.DetaleID == DetaleID);
+            if (SkladDetale != null && SkladDetale.Count > 0)
             {
-                warehousePart.Count--;
+                SkladDetale.Count--;
             }
         }
 
-        private int GetPartCount(int partID)
+        private int GetDetaleCount(int DetaleID)
         {
-            var warehousePart = warehouseParts.FirstOrDefault(wp => wp.PartID == partID);
-            return warehousePart?.Count ?? 0;
+            var SkladDetale = SkladDetales.FirstOrDefault(wp => wp.DetaleID == DetaleID);
+            return SkladDetale?.Count ?? 0;
         }
 
         private void ShowPurchaseMenu()
@@ -318,38 +319,38 @@ namespace AutoService
             Console.WriteLine("\nМеню закупки деталей");
             Console.WriteLine("Доступные детали:");
 
-            for (int i = 0; i < availableParts.Count; i++)
+            for (int i = 0; i < availableDetales.Count; i++)
             {
-                var part = availableParts[i];
-                var count = GetPartCount(part.ID);
-                Console.WriteLine($"{i + 1}. {part.Name} - {part.Price} (на складе: {count})");
+                var Detale = availableDetales[i];
+                var count = GetDetaleCount(Detale.ID);
+                Console.WriteLine($"{i + 1}. {Detale.Name} - {Detale.Price} (на складе: {count})");
             }
 
-            Console.WriteLine($"{availableParts.Count + 1}. Вернуться в главное меню");
+            Console.WriteLine($"{availableDetales.Count + 1}. Вернуться в главное меню");
             Console.Write("Выберите деталь для заказа: ");
 
             if (int.TryParse(Console.ReadLine(), out int choice))
             {
-                if (choice >= 1 && choice <= availableParts.Count)
+                if (choice >= 1 && choice <= availableDetales.Count)
                 {
-                    var selectedPart = availableParts[choice - 1];
-                    Console.Write($"Сколько {selectedPart.Name} заказать? ");
+                    var selectedDetale = availableDetales[choice - 1];
+                    Console.Write($"Сколько {selectedDetale.Name} заказать? ");
 
                     if (int.TryParse(Console.ReadLine(), out int quantity) && quantity > 0)
                     {
-                        var totalCost = selectedPart.Price * quantity;
+                        var totalCost = selectedDetale.Price * quantity;
 
-                        if (warehouse.Balance >= totalCost)
+                        if (Sklad.Balance >= totalCost)
                         {
-                            warehouse.Balance -= totalCost;
+                            Sklad.Balance -= totalCost;
                             pendingOrders.Add(new PurchaseOrder
                             {
-                                PartID = selectedPart.ID,
+                                DetaleID = selectedDetale.ID,
                                 Quantity = quantity,
                                 RemainingCars = 2
                             });
 
-                            Console.WriteLine($"Заказ на {quantity} {selectedPart.Name} оформлен!");
+                            Console.WriteLine($"Заказ на {quantity} {selectedDetale.Name} оформлен!");
                             Console.WriteLine($"Спиcано: {totalCost}. Поставка через 2 машины.");
                         }
                         else
@@ -362,7 +363,7 @@ namespace AutoService
                         Console.WriteLine("Неверное количество!");
                     }
                 }
-                else if (choice == availableParts.Count + 1)
+                else if (choice == availableDetales.Count + 1)
                 {
                     Console.WriteLine("Возврат в главное меню...");
                 }
@@ -386,46 +387,46 @@ namespace AutoService
                 if (pendingOrders[i].RemainingCars <= 0)
                 {
                     var order = pendingOrders[i];
-                    var warehousePart = warehouseParts.FirstOrDefault(wp => wp.PartID == order.PartID);
+                    var SkladDetale = SkladDetales.FirstOrDefault(wp => wp.DetaleID == order.DetaleID);
 
-                    if (warehousePart != null)
+                    if (SkladDetale != null)
                     {
-                        warehousePart.Count += order.Quantity;
+                        SkladDetale.Count += order.Quantity;
                     }
                     else
                     {
-                        warehouseParts.Add(new WarehousePart
+                        SkladDetales.Add(new SkladDetale
                         {
-                            WarehouseID = warehouse.ID,
-                            PartID = order.PartID,
+                            SkladID = Sklad.ID,
+                            DetaleID = order.DetaleID,
                             Count = order.Quantity
                         });
                     }
 
-                    var part = availableParts.First(p => p.ID == order.PartID);
-                    Console.WriteLine($"Поставка получена: {order.Quantity} {part.Name}");
+                    var Detale = availableDetales.First(p => p.ID == order.DetaleID);
+                    Console.WriteLine($"Поставка получена: {order.Quantity} {Detale.Name}");
                     pendingOrders.RemoveAt(i);
                 }
             }
         }
 
-        private void ShowWarehouseStatus()
+        private void ShowSkladStatus()
         {
-            Console.WriteLine($"\nБаланс: {warehouse.Balance}");
+            Console.WriteLine($"\nБаланс: {Sklad.Balance}");
             Console.WriteLine("Склад:");
 
-            var hasParts = false;
-            foreach (var part in availableParts)
+            var hasDetales = false;
+            foreach (var Detale in availableDetales)
             {
-                var count = GetPartCount(part.ID);
+                var count = GetDetaleCount(Detale.ID);
                 if (count > 0)
                 {
-                    Console.WriteLine($"  {part.Name}: {count} шт.");
-                    hasParts = true;
+                    Console.WriteLine($"  {Detale.Name}: {count} шт.");
+                    hasDetales = true;
                 }
             }
 
-            if (!hasParts)
+            if (!hasDetales)
             {
                 Console.WriteLine("  Склад пуст!");
             }
@@ -435,8 +436,8 @@ namespace AutoService
                 Console.WriteLine("\nОжидаются поставки:");
                 foreach (var order in pendingOrders)
                 {
-                    var part = availableParts.First(p => p.ID == order.PartID);
-                    Console.WriteLine($"  {part.Name}: {order.Quantity} шт. (через {order.RemainingCars} машин)");
+                    var Detale = availableDetales.First(p => p.ID == order.DetaleID);
+                    Console.WriteLine($"  {Detale.Name}: {order.Quantity} шт. (через {order.RemainingCars} машин)");
                 }
             }
         }
