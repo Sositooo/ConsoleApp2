@@ -50,6 +50,7 @@
     <Compile Include="model\Item.cs" />
     <Compile Include="model\Player.cs" />
     <Compile Include="model\RandomService.cs" />
+    <Compile Include="model\WeaponFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
