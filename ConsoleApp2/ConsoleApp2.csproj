@@ -46,6 +46,8 @@
     <Compile Include="model\ArmorFactory.cs" />
     <Compile Include="model\Enemy.cs" />
     <Compile Include="model\EnemyFactory.cs" />
+    <Compile Include="model\Game.cs" />
+    <Compile Include="model\Item.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
