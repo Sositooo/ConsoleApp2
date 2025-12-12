@@ -8,7 +8,7 @@ namespace ConsoleApp2
 {
     internal class Core
     {
-        public static PR8GORDOVEntities Context = new PR8GORDOVEntities();
+        public static PR8GORDOVEntities1 Context = new PR8GORDOVEntities1();
 
     }
 }

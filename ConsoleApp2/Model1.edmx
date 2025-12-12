@@ -77,7 +77,6 @@
           <Property Name="Email" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="PasswordHash" Type="nvarchar" MaxLength="255" Nullable="false" />
           <Property Name="PhoneNumber" Type="nvarchar" MaxLength="20" />
-          <Property Name="FullName" Type="nvarchar" MaxLength="100" Nullable="false" />
           <Property Name="CreatedDate" Type="datetime2" Precision="7" />
         </EntityType>
         <Association Name="FK__Cart__ProductId__47DBAE45">
@@ -272,7 +271,6 @@
           <Property Name="Email" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="PasswordHash" Type="String" MaxLength="255" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="PhoneNumber" Type="String" MaxLength="20" FixedLength="false" Unicode="true" />
-          <Property Name="FullName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" Nullable="false" />
           <Property Name="CreatedDate" Type="DateTime" Precision="7" />
           <NavigationProperty Name="Cart" Relationship="Self.FK__Cart__UserId__46E78A0C" FromRole="Users" ToRole="Cart" />
           <NavigationProperty Name="Orders" Relationship="Self.FK__Orders__UserId__4CA06362" FromRole="Users" ToRole="Orders" />
@@ -349,7 +347,7 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityContainer Name="PR8GORDOVEntities" annotation:LazyLoadingEnabled="true">
+        <EntityContainer Name="PR8GORDOVEntities1" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="Cart" EntityType="Self.Cart" />
           <EntitySet Name="OrderItems" EntityType="Self.OrderItems" />
           <EntitySet Name="Orders" EntityType="Self.Orders" />
@@ -387,7 +385,7 @@
     <!-- C-S mapping content -->
     <edmx:Mappings>
       <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
-        <EntityContainerMapping StorageEntityContainer="Хранилище PR8GORDOVModelContainer" CdmEntityContainer="PR8GORDOVEntities">
+        <EntityContainerMapping StorageEntityContainer="Хранилище PR8GORDOVModelContainer" CdmEntityContainer="PR8GORDOVEntities1">
           <EntitySetMapping Name="Cart">
             <EntityTypeMapping TypeName="PR8GORDOVModel.Cart">
               <MappingFragment StoreEntitySet="Cart">
@@ -465,7 +463,6 @@
                 <ScalarProperty Name="Email" ColumnName="Email" />
                 <ScalarProperty Name="PasswordHash" ColumnName="PasswordHash" />
                 <ScalarProperty Name="PhoneNumber" ColumnName="PhoneNumber" />
-                <ScalarProperty Name="FullName" ColumnName="FullName" />
                 <ScalarProperty Name="CreatedDate" ColumnName="CreatedDate" />
               </MappingFragment>
             </EntityTypeMapping>

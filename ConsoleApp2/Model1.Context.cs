@@ -13,10 +13,10 @@ namespace ConsoleApp2
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
     
-    public partial class PR8GORDOVEntities : DbContext
+    public partial class PR8GORDOVEntities1 : DbContext
     {
-        public PR8GORDOVEntities()
-            : base("name=PR8GORDOVEntities")
+        public PR8GORDOVEntities1()
+            : base("name=PR8GORDOVEntities1")
         {
         }
     

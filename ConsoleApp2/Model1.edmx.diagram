@@ -4,14 +4,14 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="ee6519a4a4ed48c089a7fcb703c4c92a" Name="Diagram1" ZoomLevel="74">
+      <Diagram DiagramId="e139de2c0e394c939f90528855258ecd" Name="Diagram1">
         <EntityTypeShape EntityType="PR8GORDOVModel.Cart" Width="1.5" PointX="3" PointY="5" IsExpanded="true" />
         <EntityTypeShape EntityType="PR8GORDOVModel.OrderItems" Width="1.5" PointX="8.25" PointY="5" IsExpanded="true" />
         <EntityTypeShape EntityType="PR8GORDOVModel.Orders" Width="1.5" PointX="6" PointY="4.75" IsExpanded="true" />
         <EntityTypeShape EntityType="PR8GORDOVModel.PickupPoints" Width="1.5" PointX="3.75" PointY="1" IsExpanded="true" />
         <EntityTypeShape EntityType="PR8GORDOVModel.Products" Width="1.5" PointX="0.75" PointY="0.75" IsExpanded="true" />
         <EntityTypeShape EntityType="PR8GORDOVModel.sysdiagrams" Width="1.5" PointX="0.75" PointY="8.875" IsExpanded="true" />
-        <EntityTypeShape EntityType="PR8GORDOVModel.Users" Width="1.5" PointX="0.75" PointY="4.75" IsExpanded="true" />
+        <EntityTypeShape EntityType="PR8GORDOVModel.Users" Width="1.5" PointX="0.75" PointY="4.875" IsExpanded="true" />
         <AssociationConnector Association="PR8GORDOVModel.FK__Cart__ProductId__47DBAE45" ManuallyRouted="false" />
         <AssociationConnector Association="PR8GORDOVModel.FK__Cart__UserId__46E78A0C" ManuallyRouted="false" />
         <AssociationConnector Association="PR8GORDOVModel.FK__OrderItem__Order__52593CB8" ManuallyRouted="false" />
