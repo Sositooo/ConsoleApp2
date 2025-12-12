@@ -38,6 +38,6 @@ namespace ConsoleApp2.model
         public virtual int CalculateDamage(int incomingDamage)
         {
             return Math.Max(0, incomingDamage - DamageReduction);
-        }S
+        }
     }
 }
