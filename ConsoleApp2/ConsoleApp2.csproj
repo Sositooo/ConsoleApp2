@@ -49,6 +49,7 @@
     <Compile Include="model\Game.cs" />
     <Compile Include="model\Item.cs" />
     <Compile Include="model\Player.cs" />
+    <Compile Include="model\RandomService.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
